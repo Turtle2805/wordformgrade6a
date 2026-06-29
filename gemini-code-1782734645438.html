@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giáo viên tạo: Ms Lê Hằng English</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --correct-color: #00D26A;
+            --wrong-color: #FF4757;
+            --text-color: #2D3436;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #8854C0, #FDCB6E, #00C9A7, #FF7675);
+            background-size: 400% 400%;
+            animation: gradientAnimation 12s ease infinite;
+            padding: 20px 10px;
+            color: var(--text-color);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M9 20 L15 20 L12 12 Z M40 40 A 4 4 0 1 0 40 32 A 4 4 0 1 0 40 40 M25 10 Q 30 5 35 10 T 45 10' fill='none' stroke='%23ffffff' stroke-width='2' stroke-opacity='0.15'/%3E%3Ccircle cx='50' cy='15' r='3' fill='%23ffffff' fill-opacity='0.15'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            animation: floatingBackground 25s linear infinite;
+        }
+
+        @keyframes floatingBackground {
+            from { background-position: 0 0; }
+            to { background-position: 100px 100px; }
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        header h5 {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.95);
+            background: rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+        }
+
+        .alert-box {
+            background: #FFEAA7;
+            border-left: 6px solid #D63031;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .alert-title {
+            color: #D63031;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .alert-text {
+            font-size: 0.92rem;
+            font-weight: 600;
+            line-height: 1.5;
+            color: #2D3436;
+        }
+
+        .quiz-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 0px rgba(0, 0, 0, 0.06), 0 12px 24px rgba(0,0,0,0.06);
+            border: 2px solid rgba(0,0,0,0.03);
+            transition: transform 0.2s ease;
+        }
+
+        .shake-animation {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .question-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #2D3436;
+            line-height: 1.5;
+        }
+
+        .question-number {
+            background: #8854C0;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-right: 6px;
+            display: inline-block;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #FFFFFF;
+            border: 2px solid #E0E0E0;
+            border-bottom: 5px solid #E0E0E0;
+            border-radius: 16px;
+            padding: 12px 16px;
+            font-size: 0.98rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            color: #4A4A4A;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            transform: scale(1.015);
+            background-color: #F8F9FA;
+        }
+
+        .option-btn:active:not(.disabled) {
+            transform: translateY(3px);
+            border-bottom-width: 2px;
+        }
+
+        .option-btn.correct-choice {
+            background-color: #E8FAEF !important;
+            border-color: var(--correct-color) !important;
+            border-bottom: 5px solid #00A854 !important;
+            color: #00A854 !important;
+        }
+
+        .option-btn.wrong-choice {
+            background-color: #FFEBEB !important;
+            border-color: var(--wrong-color) !important;
+            border-bottom: 5px solid #CC3643 !important;
+            color: #CC3643 !important;
+        }
+
+        .option-btn.disabled {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .explanation-card {
+            margin-top: 15px;
+            background: #F8F5FF;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1.5px dashed #8854C0;
+            display: none;
+        }
+
+        .exp-section {
+            font-size: 0.92rem;
+            line-height: 1.5;
+            margin-bottom: 6px;
+            color: #444;
+        }
+        .exp-section:last-child { margin-bottom: 0; }
+        .exp-badge { font-weight: 700; color: #8854C0; }
+
+        .custom-display-box {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .css-sale-sign {
+            background: #FF4757; color: white; padding: 15px; border-radius: 10px;
+            border: 3px dashed #FFFFFF; outline: 5px solid #FF4757; text-align: center;
+            font-weight: 700; box-shadow: 0 6px 12px rgba(0,0,0,0.15); width: 180px;
+        }
+        .css-phone-wrapper { background: #333; width: 220px; border-radius: 20px; padding: 10px 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .css-phone-screen { background: #E5DDD5; border-radius: 14px; padding: 10px; min-height: 80px; display: flex; align-items: center; }
+        .css-phone-bubble { background: #DCF8C6; padding: 8px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; }
+
+        .footer-action { text-align: center; margin: 30px 0 50px; }
+        .submit-btn {
+            background: #00C9A7; color: white; font-size: 1.2rem; font-weight: 700;
+            padding: 14px 45px; border: none; border-radius: 30px; border-bottom: 5px solid #009E82;
+            cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.15); transition: all 0.1s;
+        }
+        .submit-btn:hover { transform: scale(1.03); background: #00D9B3; }
+        .submit-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+        .overlay-popup {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); display: flex; align-items: center;
+            justify-content: center; z-index: 1000; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .overlay-popup.active { opacity: 1; pointer-events: auto; }
+        .popup-modal {
+            background: white; border-radius: 24px; padding: 25px; max-width: 450px;
+            width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            transform: scale(0.85); transition: transform 0.3s ease;
+        }
+        .overlay-popup.active .popup-modal { transform: scale(1); }
+        .score-display { font-size: 3.2rem; font-weight: 700; color: #8854C0; margin: 15px 0; }
+        .comment-display { font-size: 1rem; font-weight: 600; line-height: 1.5; color: #4A4A4A; margin-bottom: 20px; }
+        .close-btn { background: #8854C0; color: white; border: none; padding: 10px 25px; font-size: 0.95rem; font-weight: 700; border-radius: 12px; cursor: pointer; }
+        #canvas-confetti { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-confetti"></canvas>
+
+    <div class="container">
+        <header>
+            <h5>Giáo viên tạo: Ms Lê Hằng English</h5>
+        </header>
+
+        <div class="alert-box">
+            <div class="alert-title">⚠️ LỜI NHẮC CỰC KỲ QUAN TRỌNG ⚠️</div>
+            <div class="alert-text">
+                Chỉ có đọc kỹ giải thích ngay sau mỗi câu, sau đó ghi lại từ vựng/cấu trúc mới vào vở để học thì mới thực sự giỏi lên. Làm cho xong mà không đọc giải thích hay đọc qua loa không ghi chép thì chỉ tốn thời gian vô ích!<br>
+                <strong style="display:block; text-align:right; margin-top:5px; color:#2D3436;">* Kéo tới đâu, làm tới đó! *</strong>
+            </div>
+        </div>
+
+        <div id="quiz-wrapper"></div>
+
+        <div class="footer-action">
+            <button class="submit-btn" onclick="evaluateQuiz()">Nộp bài ✨</button>
+        </div>
+    </div>
+
+    <div class="overlay-popup" id="result-overlay">
+        <div class="popup-modal">
+            <h2>🎉 Kết Quả Bài Làm 🎉</h2>
+            <div class="score-display" id="final-score">0 / 50</div>
+            <div class="comment-display" id="teacher-comment">Lời khuyên...</div>
+            <button class="close-btn" onclick="resetQuiz()">Làm lại bài test 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const rawQuizDatabase = [
+            { id: 1, root: "PRIDE", text: "His parents are very _______ of him.", opts: ["proud", "pride", "proudly", "proudness"], ans: 0, trans: "Bố mẹ anh ấy rất tự hào về anh ấy.", meanings: ["A. proud (adj): tự hào", "B. pride (n): niềm tự hào", "C. proudly (adv): một cách tự hào", "D. proudness (n): sự kiêu hãnh"], structure: "Cấu trúc 'be proud of someone': tự hào về ai. Sau trạng từ mức độ 'very' ta cần điền một tính từ.", fault: "Các phương án khác không thuộc từ loại tính từ phù hợp ngữ cảnh hoặc sai cấu trúc đi kèm." },
+            { id: 2, root: "CHEMISTRY", text: "He is a _______ engineer.", opts: ["chemical", "chemistry", "chemist", "chemically"], ans: 0, trans: "Anh ấy là một kỹ sư hóa học.", meanings: ["A. chemical (adj): thuộc hóa học", "B. chemistry (n): môn hóa học", "C. chemist (n): nhà hóa học", "D. chemically (adv): về mặt hóa học"], structure: "Cụm danh từ chỉ nghề nghiệp ghép: 'chemical engineer' (kỹ sư hóa học). Tính từ 'chemical' đứng trước bổ nghĩa cho danh từ 'engineer'.", fault: "Không thể dùng danh từ 'chemistry' hay trạng từ ở đây để ghép trực tiếp thành tên chức danh công việc chuẩn." },
+            { id: 3, root: "SICK", text: "He can't go to school because of his _______.", opts: ["sickness", "sick", "sickly", "sicken"], ans: 0, trans: "Cậu ấy không thể đi học vì sự đau ốm của mình.", meanings: ["A. sickness (n): sự đau ốm", "B. sick (adj): ốm yếu", "C. sickly (adj): xanh xao", "D. sicken (v): làm cho phát ốm"], structure: "Sau giới từ 'because of' cộng với một cụm danh từ hoặc danh từ. Tính từ sở hữu 'his' báo hiệu từ cần điền phải là danh từ.", fault: "Loại từ tính từ và động từ không cấu thành cấu trúc ngữ nghĩa đúng sau tính từ sở hữu." },
+            { id: 4, root: "EDUCATE", text: "_______ is very important for everyone.", opts: ["Education", "Educate", "Educational", "Educated"], ans: 0, trans: "Giáo dục là rất quan trọng đối với tất cả mọi người.", meanings: ["A. Education (n): nền giáo dục", "B. Educate (v): giáo dục", "C. Educational (adj): thuộc giáo dục", "D. Educated (adj): có học thức"], structure: "Vị trí đầu câu làm chủ ngữ của động từ 'is' cần một danh từ số ít đóng vai trò danh từ trừu tượng.", fault: "Động từ và tính từ không thể làm chủ ngữ trực tiếp trong trường hợp câu này." },
+            { id: 5, root: "ACT", text: "They have a lot of _______ in the summer.", opts: ["activities", "activity", "active", "actions"], ans: 0, trans: "Họ có rất nhiều hoạt động vào mùa hè.", meanings: ["A. activities (n số nhiều): các hoạt động", "B. activity (n số ít): hoạt động", "C. active (adj): năng động", "D. actions (n): hành động thể chất"], structure: "Cụm từ 'a lot of' cộng với danh từ đếm được số nhiều. Ở đây 'activities' chỉ các hoạt động vui chơi giải trí mùa hè.", fault: "Không dùng số ít 'activity' sau 'a lot of'. 'Actions' thiên về hành động ứng xử pháp lý hoặc cơ bắp cụ thể." },
+            { id: 6, root: "NEIGHBOR", text: "In my _______, there is a park.", opts: ["neighborhood", "neighbor", "neighboring", "neighborly"], ans: 0, trans: "Ở khu phố của tôi, có một công viên.", meanings: ["A. neighborhood (n): khu phố", "B. neighbor (n): người hàng xóm", "C. neighboring (adj): bên cạnh", "D. neighborly (adj): hòa thuận như hàng xóm"], structure: "Sau tính từ sở hữu 'my' cần một danh từ chỉ địa điểm/nơi chốn nhằm hợp nghĩa với vế có công viên.", fault: "Điền danh từ người 'neighbor' sẽ tạo nghĩa vô lý 'trong người hàng xóm của tôi'." },
+            { id: 7, root: "HIGH", text: "What is the _______ of this mountain?", opts: ["height", "high", "highly", "highest"], ans: 0, trans: "Chiều cao của ngọn núi này là bao nhiêu?", meanings: ["A. height (n): chiều cao", "B. high (adj): cao", "C. highly (adv): rất", "D. highest (adj so sánh nhất): cao nhất"], structure: "Cấu trúc 'What is the + danh từ + of...'. Từ hạn định 'the' đứng trước yêu cầu vị trí này là một danh từ.", fault: "Các từ còn lại là tính từ và trạng từ, không thỏa mãn ngữ pháp đứng sau mạo từ 'the'." },
+            { id: 8, root: "BAKE", text: "We often buy cheap bread in the _______.", opts: ["bakery", "baker", "baking", "baked"], ans: 0, trans: "Chúng tôi thường mua bánh mì rẻ ở tiệm bánh.", meanings: ["A. bakery (n): tiệm bánh", "B. baker (n): thợ làm bánh", "C. baking (n): việc nướng bánh", "D. baked (adj): được nướng"], structure: "Giới từ chỉ địa điểm 'in the' yêu cầu theo sau bằng một danh từ chỉ nơi chốn nơi diễn ra hành động mua bánh mì.", fault: "Điền danh từ chỉ người 'baker' (thợ bánh) vào vị trí địa điểm là sai ngữ cảnh hành động." },
+            { id: 9, root: "OLD", text: "This is the _______ pagoda in Vietnam.", opts: ["oldest", "older", "old", "elder"], ans: 0, trans: "Đây là ngôi chùa cổ nhất ở Việt Nam.", meanings: ["A. oldest (adj so sánh nhất): cổ nhất", "B. older (adj so sánh hơn): cổ hơn", "C. old (adj): cổ, cũ", "D. elder (adj): lớn tuổi hơn (trong gia đình)"], structure: "Dấu hiệu nhận biết 'the + tính từ ngắn đuôi -est' thể hiện dạng so sánh nhất trong phạm vi toàn nước Việt Nam.", fault: "So sánh hơn 'older' hoặc từ nguyên bản 'old' không đi sau cấu trúc xác định 'the' ở ngữ cảnh so sánh phạm vi rộng này." },
+            { id: 10, root: "DANGER", text: "Don't ride too quickly. It is _______.", opts: ["dangerous", "danger", "dangerously", "endangered"], ans: 0, trans: "Đừng đi xe quá nhanh. Điều đó rất nguy hiểm.", meanings: ["A. dangerous (adj): nguy hiểm", "B. danger (n): mối nguy hiểm", "C. dangerously (adv): một cách nguy hiểm", "D. endangered (adj): có nguy cơ tuyệt chủng"], structure: "Sau cấu trúc 'It is + tính từ' đóng vai trò vị ngữ giải thích đặc tính cho chủ ngữ giả 'It' (đại diện cho việc lái xe nhanh).", fault: "Danh từ 'danger' hoặc trạng từ 'dangerously' không đứng làm bổ ngữ trực tiếp sau động từ tobe ở văn cảnh này." },
+            { id: 11, root: "BOOKSHELF", text: "There are four _______ in my house.", opts: ["bookshelves", "bookshelf", "books", "booksellers"], ans: 0, trans: "Có bốn chiếc kệ sách ở trong nhà tôi.", meanings: ["A. bookshelves (n số nhiều): các giá sách", "B. bookshelf (n số ít): giá sách", "C. books (n): những cuốn sách", "D. booksellers (n): người bán sách"], structure: "Số từ 'four' (bốn) yêu cầu điền một danh từ đếm được ở dạng số nhiều. Từ gốc biến đổi kết thúc đuôi f -> ves.", fault: "Từ 'bookshelf' là danh từ số ít, không tương thích với số đếm lớn hơn 1." },
+            { id: 12, root: "BUSINESS", text: "Is your father a _______?", opts: ["businessman", "business", "businesswoman", "businessy"], ans: 0, trans: "Bố của bạn có phải là một nhà kinh doanh không?", meanings: ["A. businessman (n): doanh nhân nam", "B. business (n): việc kinh doanh", "C. businesswoman (n): nữ doanh nhân", "D. businessy (adj): có phong thái kinh doanh"], structure: "Cấu trúc hỏi về nghề nghiệp cá nhân: 'Is + S + a + danh từ chỉ nghề nghiệp'. Vì chủ ngữ là 'your father' (bố - nam giới) nên chọn từ chỉ nam.", fault: "Loại 'businesswoman' do sai giới tính và loại danh từ trừu tượng 'business' vì không thể gọi người là một sự kinh doanh." },
+            { id: 13, root: "NATION", text: "I’m Vietnamese. What’s your _______?", opts: ["nationality", "nation", "national", "nationalities"], ans: 0, trans: "Tôi là người Việt Nam. Quốc tịch của bạn là gì?", meanings: ["A. nationality (n số ít): quốc tịch", "B. nation (n): quốc gia", "C. national (adj): thuộc quốc gia", "D. nationalities (n số nhiều): các quốc tịch"], structure: "Tính từ sở hữu 'your' cần đi kèm một danh từ số ít hỏi về đặc tính thông tin cá nhân của người đối thoại trực tiếp.", fault: "Danh từ 'nation' tức là đất nước, câu hỏi muốn nhắm đến yếu tố 'quốc tịch' đồng bộ với câu trả lời tương ứng 'Vietnamese'." },
+            { id: 14, root: "POLLUTE", text: "Air _______ is a big problem in many cities in the world.", opts: ["pollution", "pollute", "polluted", "pollutant"], ans: 0, trans: "Ô nhiễm không khí là một vấn đề lớn ở nhiều thành phố trên thế giới.", meanings: ["A. pollution (n): sự ô nhiễm", "B. pollute (v): làm ô nhiễm", "C. polluted (adj): bị ô nhiễm", "D. pollutant (n): chất gây ô nhiễm"], structure: "Tạo cụm danh từ ghép đóng vai trò chủ ngữ đầu câu: 'Air pollution' (Sự ô nhiễm không khí).", fault: "Các dạng từ như động từ 'pollute' hay tính từ không thể tự ý đứng sau danh từ 'Air' để cấu tạo chủ ngữ ngữ pháp." },
+            { id: 15, root: "JAPAN", text: "Yoko is from Japan. She is _______.", opts: ["Japanese", "Japan", "Japans", "Japanish"], ans: 0, trans: "Yoko đến từ Nhật Bản. Cô ấy là người Nhật Bản.", meanings: ["A. Japanese (adj/n): người Nhật", "B. Japan (n): nước Nhật", "C. Japans (n): sai từ ngữ", "D. Japanish (adj): từ không tồn tại"], structure: "Sau cấu trúc chỉ quốc tịch hệ 'S + to be + tính từ quốc tịch'. Từ chỉ gốc gác công dân của nước Japan là Japanese.", fault: "Không nhắc lại danh từ quốc gia 'Japan' trực tiếp sau mệnh đề khẳng định nhân dạng cư dân." },
+            { id: 16, root: "SPEAK", text: "Anna likes attending the English _______ contests.", opts: ["speaking", "speak", "speaker", "speech"], ans: 0, trans: "Anna thích tham gia các cuộc thi nói tiếng Anh.", meanings: ["A. speaking (Danh động từ): việc nói", "B. speak (v): nói", "C. speaker (n): người nói", "D. speech (n): bài diễn văn"], structure: "Cụm danh từ cố định quen thuộc: 'English speaking contest' (Cuộc thi hùng biện / thi nói tiếng Anh).", fault: "Động từ dạng nguyên mẫu hoặc danh từ chỉ thực thể người không đứng chen vào giữa tổ hợp danh từ ghép này." },
+            { id: 17, root: "FAME", text: "My neighborhood is _______ for good and cheap restaurants.", opts: ["famous", "fame", "famously", "infamous"], ans: 0, trans: "Khu phố của tôi nổi tiếng với các nhà hàng ngon và rẻ.", meanings: ["A. famous (adj): nổi tiếng", "B. fame (n): danh vọng", "C. famously (adv): cực kỳ tốt", "D. infamous (adj): tai tiếng"], structure: "Cụm tính từ đi kèm giới từ cố định: 'be famous for something' mang nghĩa là nổi tiếng vì điều gì tốt đẹp.", fault: "Danh từ và trạng từ không đáp ứng cấu trúc của tính từ sau động từ tobe 'is'." },
+            { id: 18, root: "ENTERTAIN", text: "I like the city life because there are many kinds of _______.", opts: ["entertainment", "entertain", "entertaining", "entertainer"], ans: 0, trans: "Tôi thích cuộc sống thành thị vì có nhiều loại hình giải trí.", meanings: ["A. entertainment (n): sự giải trí", "B. entertain (v): giải trí", "C. entertaining (adj): có tính giải trí", "D. entertainer (n): người biểu diễn"], structure: "Sau giới từ cấu trúc 'kind of + danh từ'. Ở đây cần danh từ trừu tượng chỉ chung cho dịch vụ giải trí đô thị.", fault: "Phương án động từ hay tính từ bị loại hoàn toàn do sai quy chuẩn đứng sau giới từ ngữ pháp." },
+            { id: 19, root: "SUN", text: "These children like _______ weather.", opts: ["sunny", "sun", "sunshine", "sunless"], ans: 0, trans: "Những đứa trẻ này thích thời tiết có nắng.", meanings: ["A. sunny (adj): có nắng", "B. sun (n): mặt trời", "C. sunshine (n): ánh nắng", "D. sunless (adj): không có ánh mặt trời"], structure: "Đứng trước bổ nghĩa cho danh từ 'weather' cần một tính từ chỉ đặc điểm tự nhiên khí hậu tích cực phù hợp sở thích.", fault: "Danh từ 'sun' hay 'sunshine' không trực tiếp làm bổ ngữ chỉ loại hình tính chất thời tiết trong cấu trúc câu này." },
+            { id: 20, root: "WELL", text: "Lan speaks English _______ than me.", opts: ["better", "well", "best", "more well"], ans: 0, trans: "Lan nói tiếng Anh tốt hơn tôi.", meanings: ["A. better (Trạng từ so sánh hơn)", "B. well (Trạng từ nguyên thể)", "C. best (So sánh nhất)", "D. more well (Sai ngữ pháp)"], structure: "Dấu hiệu nhận biết 'than' là cấu trúc so sánh hơn. Từ gốc là trạng từ 'well' bổ nghĩa cho động từ 'speaks', chuyển sang so sánh hơn biến đổi đặc biệt thành 'better'.", fault: "Nhóm từ tính trạng ngắn bất quy tắc không đi kèm từ 'more' trong câu so sánh hơn." },
+            { id: 21, root: "LONG", text: "The Great Wall of China is the world’s _______ structure.", opts: ["longest", "longer", "long", "length"], ans: 0, trans: "Vạn Lý Trường Thành của Trung Quốc là kiến trúc dài nhất thế giới.", meanings: ["A. longest (Tính từ so sánh nhất)", "B. longer (So sánh hơn)", "C. long (Tính từ nguyên bản)", "D. length (n): chiều dài"], structure: "Sử dụng cấu trúc so sánh nhất kết hợp sở hữu cách 'world’s + tính từ đuôi -est' khẳng định vị thế kỷ lục.", fault: "So sánh hơn 'longer' đòi hỏi cấu trúc có 'than' và đối tượng thứ hai để đối chiếu đối ứng." },
+            { id: 22, root: "NATION", text: "What’s Maco’s _______? - She’s British.", opts: ["nationality", "nation", "national", "native"], ans: 0, trans: "Quốc tịch của Maco là gì? - Cô ấy là người Anh.", meanings: ["A. nationality (n): quốc tịch", "B. nation (n): quốc gia", "C. national (adj): thuộc quốc gia", "D. native (adj/n): bản xứ"], structure: "Câu hỏi thông tin nhân thân cơ bản dựa trên lời hồi đáp 'British' (Người Anh - chỉ quốc tịch). Do vậy từ khóa duy nhất đi sau sở hữu cách phải là danh từ 'nationality'.", fault: "Không dùng 'nation' (đất nước) vì câu trả lời là tính từ chỉ quốc tịch con người." },
+            { id: 23, root: "DANGER", text: "Don’t make a fire hard. It’s very _______.", opts: ["dangerous", "danger", "dangerously", "endangered"], ans: 0, trans: "Don’t make a fire hard. It’s very _______.", meanings: ["A. dangerous (adj): nguy hiểm", "B. danger (n): mối nguy hiểm", "C. dangerously (adv): một cách nguy hiểm", "D. endangered (adj): bị đe dọa"], structure: "Vị trí sau trạng từ chỉ mức độ 'very' và động từ nối 'is' đòi hỏi một tính từ mô tả thuộc tính sự việc.", fault: "Trạng từ 'dangerously' chỉ dùng bổ nghĩa cho động từ thường hoặc một tính từ khác, không đứng độc lập làm vị ngữ sau 'very'." },
+            { id: 24, root: "SING", text: "Mai’s sister is a _______.", opts: ["singer", "sing", "singing", "song"], ans: 0, trans: "Chị gái của Mai là một ca sĩ.", meanings: ["A. singer (n): ca sĩ", "B. sing (v): ca hát", "C. singing (n): việc hát", "D. song (n): bài hát"], structure: "Sau mạo từ chỉ số ít 'a' chỉ về định hướng danh tính nghề nghiệp con người, ta cần một danh từ chỉ người.", fault: "Danh từ 'song' nghĩa là bài hát, áp dụng cho chủ ngữ con người 'Mai’s sister' sẽ gây hiểu sai ngữ nghĩa." },
+            { id: 25, root: "NOISE", text: "It is very _______ in the city.", opts: ["noisy", "noise", "noisily", "noiseless"], ans: 0, trans: "Ở thành phố rất ồn ào.", meanings: ["A. noisy (adj): ồn ào", "B. noise (n): tiếng ồn", "C. noisily (adv): một cách ồn ào", "D. noiseless (adj): không có tiếng động"], structure: "Hệ cấu trúc 'It is + very + tính từ' chỉ trạng thái đặc trưng môi trường không gian đô thị.", fault: "Danh từ 'noise' không đi trực tiếp sau cấu trúc chỉ mức độ 'very' khi đóng vai trò tính chất của địa điểm." },
+            { id: 26, root: "SECRETARY", text: "There are two _______ in his office.", opts: ["secretaries", "secretary", "secretarial", "secrets"], ans: 0, trans: "Có hai thư ký trong văn phòng của ông ấy.", meanings: ["A. secretaries (n số nhiều): các thư ký", "B. secretary (n số ít): thư ký", "C. secretarial (adj): thuộc về thư ký", "D. secrets (n): những bí mật"], structure: "Số đếm 'two' yêu cầu danh từ đi liền sau phải biến đổi thành dạng số nhiều đếm được (y ngắn thêm es).", fault: "Sử dụng dạng số ít danh từ 'secretary' là vi phạm nguyên tắc đếm số lượng ngữ pháp." },
+            { id: 27, root: "WRITE", text: "Do you know the _______ of this book?", opts: ["writer", "write", "writing", "written"], ans: 0, trans: "Bạn có biết người viết cuốn sách này là ai không?", meanings: ["A. writer (n): nhà văn, tác giả", "B. write (v): viết", "C. writing (n): bản viết", "D. written (v3/adj): được viết"], structure: "Xác lập cụm sở hữu danh từ 'the + danh từ người + of this book'. Biến đổi động từ 'write' thành danh từ chỉ thực thể người thực hiện hành động.", fault: "Động từ nguyên mẫu 'write' không đứng sau mạo từ xác định 'the' làm tân ngữ chính." },
+            { id: 28, root: "COMFORT", text: "This is my favorite chair. It’s so _______.", opts: ["comfortable", "comfort", "comfortably", "uncomfortable"], ans: 0, trans: "Đây là chiếc ghế yêu thích của tôi. Nó thật thoải mái.", meanings: ["A. comfortable (adj): thoải mái", "B. comfort (n/v): sự an ủi", "C. comfortably (adv): một cách dễ chịu", "D. uncomfortable (adj): không thoải mái"], structure: "Đi sau từ chỉ mức độ cường hóa 'so' và động từ 'is', cần tính từ mang nghĩa tích cực tương thích với cụm từ gợi ý phía trước 'favorite chair'.", fault: "Tính từ tiêu cực 'uncomfortable' trái ngược hoàn toàn ý nghĩa logic với sự yêu thích được khẳng định đầu câu." },
+            { id: 29, root: "FINISH", text: "My father often _______ his work at 4.30.", opts: ["finishes", "finish", "finishing", "finished"], ans: 0, trans: "Bố tôi thường hoàn thành công việc lúc 4 giờ 30 phút.", meanings: ["A. finishes (v chia ngôi số ít)", "B. finish (v nguyên mẫu)", "C. finishing (v-ing)", "D. finished (v quá khứ)"], structure: "Trạng từ tần suất 'often' chỉ hành vi lặp lại ở hiện tại đơn. Chủ ngữ 'My father' thuộc ngôi thứ ba số ít, động từ kết thúc bằng đuôi -sh nên phải thêm -es.", fault: "Để động từ dạng nguyên thể hoặc phân từ -ing mà không có trợ động từ đi kèm là sai cấu trúc thời hiện tại đơn." },
+            { id: 30, root: "BIG", text: "Ho Chi Minh city is the _______ city in Vietnam.", opts: ["biggest", "bigger", "big", "bigness"], ans: 0, trans: "Thành phố Hồ Chí Minh là thành phố lớn nhất tại Việt Nam.", meanings: ["A. biggest (adj so sánh nhất)", "B. bigger (adj so sánh hơn)", "C. big (adj nguyên bản)", "D. bigness (n): sự to lớn"], structure: "Cấu trúc so sánh nhất đối với tính từ ngắn có mạo từ: 'the + tính từ ngắn gấp đôi phụ âm cuối thêm -est'. Thể hiện sự so sánh phạm vi toàn bộ một đất nước.", fault: "Dạng so sánh hơn 'bigger' không được dùng khi không có cấu trúc so sánh cặp song phương trực diện." },
+            { id: 31, root: "OLD", text: "My sister is _______ than I.", opts: ["older", "oldest", "old", "elder"], ans: 0, trans: "Chị gái tôi thì lớn tuổi hơn tôi.", meanings: ["A. older (adj so sánh hơn)", "B. oldest (adj so sánh nhất)", "C. old (adj nguyên thể)", "D. elder (adj): lớn tuổi hơn (chỉ đứng trước danh từ)"], structure: "Nhận biết từ then chốt 'than' đặc trưng của mô thức so sánh hơn. Tính từ ngắn 'old' thêm hậu tố '-er'.", fault: "Từ 'elder' cũng mang nghĩa lớn hơn nhưng chỉ đứng trước danh từ làm định ngữ, không kết hợp với 'than'." },
+            { id: 32, root: "SHORT", text: "Nam is _______ than Ba. He is the _______ boy in Vietnam.", opts: ["shorter / shortest", "short / shorter", "shortest / shorter", "shorter / short"], ans: 0, trans: "Nam thì thấp hơn Ba. Cậu ấy là cậu bé thấp nhất Việt Nam.", meanings: ["A. shorter / shortest (Phối hợp)", "B. short / shorter", "C. shortest / shorter", "D. shorter / short"], structure: "Vế một chứa từ 'than' quy định dạng so sánh hơn (shorter). Vế hai chứa mạo từ 'the' kèm phạm vi 'in Vietnam' quy định dạng so sánh nhất (shortest).", fault: "Các tổ hợp phương án khác phối hợp sai thứ tự cấu trúc ngữ pháp quy định bởi từ nhận biết trong câu." },
+            { id: 33, root: "THICK", text: "These books are _______ than those books.", opts: ["thicker", "thick", "thickest", "thickness"], ans: 0, trans: "Những cuốn sách này dày hơn những cuốn sách kia.", meanings: ["A. thicker (adj so sánh hơn)", "B. thick (adj nguyên thể)", "C. thickest (adj so sánh nhất)", "D. thickness (n): độ dày"], structure: "Từ nhận biết 'than' yêu cầu tính từ ngắn 'thick' phải chuyển hóa sang thể loại cấu trúc so sánh hơn bằng cách thêm đuôi '-er'.", fault: "Danh từ và tính từ dạng so sánh nhất không thể kết hợp cùng từ nối so sánh hơn 'than'." },
+            { id: 34, root: "TALL", text: "It is the _______ building in this city.", opts: ["tallest", "taller", "tall", "tallness"], ans: 0, trans: "Đó là tòa nhà cao nhất trong thành phố này.", meanings: ["A. tallest (adj so sánh nhất)", "B. taller (adj so sánh hơn)", "C. tall (adj nguyên gốc)", "D. tallness (n): chiều cao"], structure: "Mô hình ngữ pháp xác định vị thế đỉnh điểm 'the + tính từ ngắn-est + danh từ' biểu thị phép so sánh nhất trong một phạm vi không gian cụ thể.", fault: "Loại tính từ so sánh hơn và danh từ trừu tượng do không thỏa mãn mạo từ xác định phía trước tòa nhà." },
+            { id: 35, root: "CHILD", text: "My aunt has two _______, one boy and one girl.", opts: ["children", "childs", "child", "childhood"], ans: 0, trans: "Dì của tôi có hai người con, một trai và một gái.", meanings: ["A. children (n số nhiều)", "B. childs (Sai dạng từ)", "C. child (n số ít)", "D. childhood (n): thời thơ ấu"], structure: "Số từ chỉ số lượng 'two' buộc danh từ theo sau phải ở dạng số nhiều. Từ 'child' có dạng biến đổi số nhiều đặc biệt bất quy tắc thành 'children'.", fault: "Không tồn tại từ 'childs' thêm s thông thường trong hệ thống ngữ pháp tiếng Anh chính thống." },
+            { id: 36, root: "RAIN", text: "I don’t like the _______ weather.", opts: ["rainy", "rain", "raining", "rainless"], ans: 0, trans: "Tôi không thích thời tiết có mưa.", meanings: ["A. rainy (adj): có mưa", "B. rain (n/v): cơn mưa", "C. raining (v-ing)", "D. rainless (adj): không mưa"], structure: "Cần một tính từ bổ nghĩa tính chất tự nhiên đứng trước danh từ 'weather'. Từ 'rainy' mô tả trạng thái thời tiết phổ biến.", fault: "Danh từ 'rain' đứng trực tiếp cạnh 'weather' tạo sự lặp từ không tối ưu về mặt ngữ nghĩa mô tả." },
+            { id: 37, root: "MUSIC", text: "That _______ can play the guitar very well.", opts: ["musician", "music", "musical", "musically"], ans: 0, trans: "Người nhạc sĩ đó có thể chơi đàn ghi-ta rất giỏi.", meanings: ["A. musician (n): nhạc sĩ", "B. music (n): âm nhạc", "C. musical (adj): thuộc âm nhạc", "D. musically (adv): về mặt âm nhạc"], structure: "Đứng sau đại từ chỉ định 'That' và đứng trước trợ động từ 'can play' làm chủ ngữ chính của câu, ta bắt buộc phải điền một danh từ chỉ người.", fault: "Danh từ trừu tượng 'music' (âm nhạc) không thể thực hiện hành động vật lý là 'chơi đàn guitar'." },
+            { id: 38, root: "MOUNTAIN", text: "Is Quang Ninh a _______ province?", opts: ["mountainous", "mountain", "mountains", "mount"], ans: 0, trans: "Quảng Ninh có phải là một tỉnh miền núi không?", meanings: ["A. mountainous (adj): thuộc miền núi", "B. mountain (n): ngọn núi", "C. mountains (n số nhiều)", "D. mount (v): leo lên"], structure: "Vị trí nằm giữa mạo từ 'a' và danh từ chính 'province' đòi hỏi một tính từ đóng vai trò bổ ngữ định tính cho vùng địa lý.", fault: "Danh từ gốc 'mountain' không mang tính chất mô tả đặc thù địa hình cho toàn bộ một tỉnh lị." },
+            { id: 39, root: "FRIEND", text: "He greets me in a _______ way.", opts: ["friendly", "friend", "friendship", "friendless"], ans: 0, trans: "Anh ấy chào đón tôi theo một cách thân thiện.", meanings: ["A. friendly (adj): thân thiện", "B. friend (n): người bạn", "C. friendship (n): tình bạn", "D. friendless (adj): không bạn bè"], structure: "Cụm từ chỉ cách thức cố định: 'in a friendly way' (theo cách thân thiện). Lưu ý đuôi -ly ở đây cấu tạo nên tính từ từ danh từ 'friend'.", fault: "Danh từ 'friendship' không đứng vào vị trí bổ nghĩa tính chất cho từ chỉ phương thức 'way'." },
+            { id: 40, root: "WATCH", text: "He _______ TV every evening.", opts: ["watches", "watch", "watching", "watched"], ans: 0, trans: "Anh ấy xem ti vi mỗi buổi tối.", meanings: ["A. watches (v chia hiện tại đơn)", "B. watch (v nguyên mẫu)", "C. watching (v-ing)", "D. watched (v quá khứ)"], structure: "Cụm từ chỉ tần suất hệ thống 'every evening' là dấu hiệu thì hiện tại đơn. Chủ ngữ 'He' yêu cầu động từ thêm đuôi -es do tận cùng là đuôi -ch.", fault: "Dạng nguyên thể 'watch' chỉ áp dụng cho nhóm chủ ngữ số nhiều như They, We, You, I." },
+            { id: 41, root: "BEAUTY", text: "There is a _______ rice paddy near my house.", opts: ["beautiful", "beauty", "beautifully", "beautify"], ans: 0, trans: "Có một cánh đồng lúa xinh đẹp ở gần nhà tôi.", meanings: ["A. beautiful (adj): xinh đẹp", "B. beauty (n): vẻ đẹp", "C. beautifully (adv): một cách tốt đẹp", "D. beautify (v): làm đẹp"], structure: "Vị trí bổ nghĩa trực tiếp đứng trước cụm danh từ vật thể 'rice paddy' yêu cầu một tính từ miêu tả hình thái thẩm mỹ ngoại cảnh.", fault: "Trạng từ 'beautifully' chỉ đi kèm bổ trợ động từ thường, không đứng trước danh từ làm định ngữ trực tiếp." },
+            { id: 42, root: "FOOT", text: "His _______ are small and long.", opts: ["feet", "foots", "foot", "footers"], ans: 0, trans: "Đôi bàn chân của anh ấy nhỏ và dài.", meanings: ["A. feet (n số nhiều của foot)", "B. foots (Sai dạng từ)", "C. foot (n số ít)", "D. footers (n): phần chân trang"], structure: "Động từ to be ở dạng số nhiều 'are' bắt buộc chủ ngữ đứng trước nó phải là một danh từ số nhiều. Từ 'foot' chuyển sang số nhiều đổi thành 'feet'.", fault: "Thêm hậu tố s thành 'foots' là lỗi sai nghiêm trọng về biến đổi danh từ bất quy tắc cơ bản." },
+            { id: 43, root: "RIDE", text: "Miss. Thuy is _______ her motorbike to work.", opts: ["riding", "ride", "rides", "rode"], ans: 0, trans: "Cô Thủy đang đi xe máy của mình tới chỗ làm việc.", meanings: ["A. riding (v-ing phân từ)", "B. ride (v nguyên thể)", "C. rides (v chia số ít)", "D. rode (v quá khứ)"], structure: "Cấu trúc diễn tả hành động đang diễn ra tại thời điểm nói: 'S + to be (is) + V-ing'. Chú ý quy tắc bỏ chữ 'e' cuối trước khi thêm đuôi -ing.", fault: "Động từ nguyên mẫu hoặc chia đuôi s không thể đứng trực tiếp sau trợ động từ to be 'is' ở thể chủ động." },
+            { id: 44, root: "CARE", text: "You must be _______ when you cross the busy streets.", opts: ["careful", "care", "carefully", "careless"], ans: 0, trans: "Con phải cẩn thận khi đi qua những con đường đông đúc.", meanings: ["A. careful (adj): cẩn thận", "B. care (n/v): sự chăm sóc", "C. carefully (adv): một cách cẩn thận", "D. careless (adj): cẩu thả"], structure: "Sau động từ khuyết thiếu kết hợp động từ nối 'must be', ta cần một tính từ chỉ tính chất, trạng thái cần thiết của chủ thể hành động.", fault: "Trạng từ 'carefully' sai ngữ pháp sau động từ liên kết be. Tính từ 'careless' mang ý nghĩa cẩu thả trái ngược cảnh báo an toàn giao thông." },
+            { id: 45, root: "TWO", text: "My school library is on the _______ floor. I go there _______ a week.", opts: ["second / twice", "two / twice", "second / two", "twice / second"], ans: 0, trans: "Thư viện trường của tôi nằm ở tầng hai. Tôi tới đó hai lần một tuần.", meanings: ["A. second / twice (Phối hợp)", "B. two / twice", "C. second / two", "D. twice / second"], structure: "Vị trí đầu tiên đi sau cụm 'on the' chỉ số tầng lầu của tòa nhà bắt buộc dùng số thứ tự (second). Vế sau chỉ số lần lặp lại hành động trong tuần dùng trạng từ tần suất (twice).", fault: "Sử dụng số đếm 'two' cho số tầng có mạo từ 'the' hoặc đảo lộn vị trí tần suất lên trước là sai quy tắc ngữ pháp." },
+            { id: 46, root: "USUAL", text: "Why are you _______ late for school?", opts: ["usually", "usual", "unusual", "usuallyer"], ans: 0, trans: "Tại sao bạn thường xuyên bị đi học muộn thế?", meanings: ["A. usually (adv): thường xuyên", "B. usual (adj): thông thường", "C. unusual (adj): bất thường", "D. usuallyer (Sai từ)"], structure: "Trạng từ tần suất 'usually' đứng trước tính từ 'late' bổ nghĩa mức độ thường xuyên cho trạng thái được đề cập trong câu hỏi.", fault: "Tính từ 'usual' không đứng ở vị trí bổ nghĩa cho một tính từ khác trong cấu trúc câu hỏi lý do." },
+            { id: 47, root: "SUIT", text: "I’m looking for a _______ gift for an old lady.", opts: ["suitable", "suit", "suitably", "suited"], ans: 0, trans: "Tôi đang tìm kiếm một món quà phù hợp cho một cụm bà.", meanings: ["A. suitable (adj): phù hợp", "B. suit (n/v): bộ âu phục", "C. suitably (adv): một cách phù hợp", "D. suited (adj): tương xứng"], structure: "Vị trí đứng trước danh từ mục tiêu 'gift' (món quà) nằm trong cụm mạo từ 'a... gift' yêu cầu một tính từ bổ trợ thuộc tính.", fault: "Trạng từ 'suitably' không có chức năng đứng làm định ngữ bổ nghĩa trực tiếp trực diện cho danh từ." },
+            { id: 48, root: "HEAT", text: "This coffee is too _______ to drink.", opts: ["hot", "heat", "heater", "hotly"], ans: 0, trans: "Cà phê này quá nóng để có thể uống.", meanings: ["A. hot (adj): nóng", "B. heat (n/v): sức nóng", "C. heater (n): máy sưởi", "D. hotly (adv): nảy lửa"], structure: "Áp dụng cấu trúc định lượng tính chất: 'S + be + too + tính từ + to V' (Cái gì quá... để làm việc gì). Từ gốc danh từ 'heat' chuyển sang tính từ tương ứng là 'hot'.", fault: "Dụng danh từ vật thể như 'heat' hay 'heater' vào vị trí sau cấu trúc chỉ mức độ 'too' là sai ngữ pháp." },
+            { id: 49, root: "DEEP", text: "Do you know what the _______ of the river is?", opts: ["depth", "deep", "deeply", "deepen"], ans: 0, trans: "Bạn có biết chiều sâu của con sông này là bao nhiêu không?", meanings: ["A. depth (n): chiều sâu", "B. deep (adj): sâu", "C. deeply (adv): một cách sâu sắc", "D. deepen (v): làm sâu thêm"], structure: "Cấu trúc hỏi danh từ đặc tính: 'the + danh từ + of something'. Từ gốc tính từ 'deep' có danh từ phái sinh tương ứng viết là 'depth'.", fault: "Tính từ 'deep' không đứng trực tiếp làm mốc giới hạn sau cấu trúc mạo từ xác định 'the' trong cụm từ sở hữu." },
+            { id: 50, root: "VARY", text: "There is a _______ of fruits in Vietnam.", opts: ["variety", "various", "vary", "variation"], ans: 0, trans: "Có rất nhiều chủng loại trái cây đa dạng ở Việt Nam.", meanings: ["A. variety (n): sự đa dạng", "B. various (adj): đa dạng", "C. vary (v): thay đổi", "D. variation (n): sự biến đổi"], structure: "Áp dụng cụm danh từ cố định chỉ số lượng phong phú: 'a variety of + danh từ số nhiều' mang ý nghĩa là có rất nhiều loại khác nhau.", fault: "Tính từ 'various' không đi liền sau mạo từ đơn 'a' khi có cấu trúc giới từ 'of' liên kết danh từ phía sau." }
+        ];
+
+        let stateUserAnswers = {};
+        const activeQuizList = [...rawQuizDatabase];
+
+        function shuffleOptions() {
+            activeQuizList.forEach(item => {
+                const originalCorrectText = item.opts[item.ans];
+                for (let i = item.opts.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [item.opts[i], item.opts[j]] = [item.opts[j], item.opts[i]];
+                }
+                item.ans = item.opts.indexOf(originalCorrectText);
+            });
+        }
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        function playGamificationSound(isCorrect) {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            const osc = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            if (isCorrect) {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                osc.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            } else {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(220, audioContext.currentTime);
+                osc.frequency.linearRampToValueAtTime(110, audioContext.currentTime + 0.25);
+                gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.3);
+            }
+        }
+
+        const confettiCanvas = document.getElementById('canvas-confetti');
+        const ctxConfetti = confettiCanvas.getContext('2d');
+        let confettiElements = [];
+        let rAFId = null;
+
+        function updateCanvasSize() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', updateCanvasSize);
+        updateCanvasSize();
+
+        function triggerConfettiBurst() {
+            confettiElements = [];
+            const colors = ['#8854C0', '#FDCB6E', '#00C9A7', '#FF7675', '#00D26A'];
+            for (let i = 0; i < 80; i++) {
+                confettiElements.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * confettiCanvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+                    tiltAngle: 0
+                });
+            }
+            if(rAFId) cancelAnimationFrame(rAFId);
+            animateConfettiStream();
+        }
+
+        function animateConfettiStream() {
+            ctxConfetti.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            let activeAnimation = false;
+            confettiElements.forEach((p) => {
+                p.tiltAngle += p.tiltAngleIncremental;
+                p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                p.x += Math.sin(p.tiltAngle);
+                p.tilt = Math.sin(p.tiltAngle - p.r / 2) * 3;
+
+                if (p.y <= confettiCanvas.height) {
+                    activeAnimation = true;
+                }
+
+                ctxConfetti.beginPath();
+                ctxConfetti.lineWidth = p.r;
+                ctxConfetti.strokeStyle = p.color;
+                ctxConfetti.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                ctxConfetti.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                ctxConfetti.stroke();
+            });
+            if (activeAnimation) {
+                rAFId = requestAnimationFrame(animateConfettiStream);
+            } else {
+                ctxConfetti.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }
+        }
+
+        function renderQuizInterface() {
+            const wrapper = document.getElementById('quiz-wrapper');
+            wrapper.innerHTML = "";
+
+            activeQuizList.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                card.id = `card-q-${index}`;
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'question-title';
+                titleDiv.innerHTML = `<span class="question-number">Câu ${index + 1}</span> Gốc từ: <strong>(${item.root})</strong> — ${item.text}`;
+                card.appendChild(titleDiv);
+
+                if (item.id === 29) {
+                    const customBox = document.createElement('div');
+                    customBox.className = 'custom-display-box';
+                    customBox.innerHTML = `<div class="css-sale-sign"><h3>SALE OFF</h3><p>Up to 50% Today!</p></div>`;
+                    card.appendChild(customBox);
+                } else if (item.id === 30) {
+                    const customBox = document.createElement('div');
+                    customBox.className = 'custom-display-box';
+                    customBox.innerHTML = `<div class="css-phone-wrapper"><div class="css-phone-screen"><div class="css-phone-bubble">Where is the biggest city in Vietnam?</div></div></div>`;
+                    card.appendChild(customBox);
+                }
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options-container';
+
+                item.opts.forEach((optText, optIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `option-btn opt-btn-${index}`;
+                    const labelLetter = String.fromCharCode(65 + optIdx);
+                    btn.innerText = `${labelLetter}. ${optText}`;
+                    btn.onclick = () => selectAnswer(index, optIdx);
+                    optionsDiv.appendChild(btn);
+                });
+                card.appendChild(optionsDiv);
+
+                const expCard = document.createElement('div');
+                expCard.className = 'explanation-card';
+                expCard.id = `explanation-${index}`;
+                
+                expCard.innerHTML = `
+                    <div class="exp-section"><span class="exp-badge">1. Dịch nghĩa câu:</span> "${item.trans}"</div>
+                    <div class="exp-section"><span class="exp-badge">2. Ý nghĩa của 4 đáp án:</span><br>${item.meanings.join('<br>')}</div>
+                    <div class="exp-section"><span class="exp-badge">3. Tại sao chọn đáp án đúng?</span> ${item.structure}</div>
+                    <div class="exp-section"><span class="exp-badge">4. Tại sao các đáp án khác sai?</span> ${item.fault}</div>
+                `;
+                card.appendChild(expCard);
+                wrapper.appendChild(card);
+            });
+        }
+
+        function selectAnswer(qIndex, selectedIdx) {
+            if (stateUserAnswers[qIndex] !== undefined) return;
+
+            stateUserAnswers[qIndex] = selectedIdx;
+            const targetQuestion = activeQuizList[qIndex];
+            const correctIdx = targetQuestion.ans;
+
+            const buttons = document.querySelectorAll(`.opt-btn-${qIndex}`);
+            buttons.forEach((btn, idx) => {
+                btn.classList.add('disabled');
+                if (idx === correctIdx) {
+                    btn.classList.add('correct-choice');
+                }
+                if (idx === selectedIdx && selectedIdx !== correctIdx) {
+                    btn.classList.add('wrong-choice');
+                }
+            });
+
+            const targetCard = document.getElementById(`card-q-${qIndex}`);
+            if (selectedIdx === correctIdx) {
+                playGamificationSound(true);
+                triggerConfettiBurst();
+            } else {
+                playGamificationSound(false);
+                targetCard.classList.add('shake-animation');
+                setTimeout(() => {
+                    targetCard.classList.remove('shake-animation');
+                }, 400);
+            }
+
+            document.getElementById(`explanation-${qIndex}`).style.display = 'block';
+        }
+
+        function evaluateQuiz() {
+            let correctCount = 0;
+            activeQuizList.forEach((item, index) => {
+                if (stateUserAnswers[index] === item.ans) {
+                    correctCount++;
+                }
+            });
+
+            const totalQuestions = activeQuizList.length;
+            const scorePercent = (correctCount / totalQuestions) * 100;
+
+            document.getElementById('final-score').innerText = `${correctCount} / ${totalQuestions}`;
+            const commentBox = document.getElementById('teacher-comment');
+
+            if (scorePercent < 50) {
+                commentBox.innerText = "Điểm lần này chưa cao lắm, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+            } else if (scorePercent >= 60 && scorePercent <= 80) {
+                commentBox.innerText = "Con đã có tiến bộ khá ổn rồi, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+            } else {
+                commentBox.innerText = "Làm tốt lắm, con cố gắng ring điểm 10 ở lần sau nha!";
+                triggerConfettiBurst();
+            }
+
+            document.getElementById('result-overlay').classList.add('active');
+        }
+
+        function closePopup() {
+            document.getElementById('result-overlay').classList.remove('active');
+        }
+
+        function resetQuiz() {
+            stateUserAnswers = {};
+            closePopup();
+            shuffleOptions();
+            renderQuizInterface();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = () => {
+            shuffleOptions();
+            renderQuizInterface();
+        };
+    </script>
+</body>
+</html>
